@@ -299,6 +299,7 @@
     </div>
 
     <script type="module">
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         // =====================================================================
         // 🔒 ADMIN CREDENTIALS
         // HOW TO CHANGE YOUR ID AND PASSWORD:
@@ -414,61 +415,71 @@ const firebaseConfig = {
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        signInAnonymously(auth).catch((error) => console.error("Auth Error:", error));
-
-        // உண்மையான ஃபயர்பேஸ் Save Logic
-        saveDataBtn.addEventListener('click', async () => {
-            const originalText = saveDataBtn.innerHTML;
-            saveDataBtn.innerHTML = `<svg class="animate-spin h-4 w-4 text-black inline mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...`;
-            saveDataBtn.disabled = true;
-
-            portfolioData[currentPortfolio] = portfolioTextarea.value;
-
-            const websiteData = {
-                hero: {
-                    1: document.getElementById('hero-1').value,
-                    2: document.getElementById('hero-2').value,
-                    3: document.getElementById('hero-3').value,
-                    4: document.getElementById('hero-4').value,
-                },
-                trending: {
-                    title: document.getElementById('trend-title').value,
-                    desc: document.getElementById('trend-desc').value,
-                    images: document.getElementById('trend-images').value.split('\n').filter(l => l.trim() !== '')
-                },
-                categories: {
-                    silk: document.getElementById('cat-silk').value,
-                    banaras: document.getElementById('cat-banaras').value,
-                    pattu: document.getElementById('cat-pattu').value,
-                    cotton: document.getElementById('cat-cotton').value,
-                    shirts: document.getElementById('cat-shirts').value,
-                    mensinners: document.getElementById('cat-mensinners').value,
-                    tshirts: document.getElementById('cat-tshirts').value,
-                    weddingcoatsuit: document.getElementById('cat-weddingcoatsuit').value,
-                    veshti: document.getElementById('cat-veshti').value,
-                    pants: document.getElementById('cat-pants').value,
-                    kids0to6: document.getElementById('cat-kids0').value,
-                    kids6to12: document.getElementById('cat-kids6').value,
-                    prince: document.getElementById('cat-prince').value,
-                    princess: document.getElementById('cat-princess').value,
-                },
-                portfolios: {
-                    silk: portfolioData['port-silk'].split('\n').filter(l => l.trim() !== ''),
-                    banaras: portfolioData['port-banaras'].split('\n').filter(l => l.trim() !== ''),
-                    pattu: portfolioData['port-pattu'].split('\n').filter(l => l.trim() !== ''),
-                    cotton: portfolioData['port-cotton'].split('\n').filter(l => l.trim() !== ''),
-                    shirts: portfolioData['port-shirts'].split('\n').filter(l => l.trim() !== ''),
-                    mensinners: portfolioData['port-mensinners'].split('\n').filter(l => l.trim() !== ''),
-                    tshirts: portfolioData['port-tshirts'].split('\n').filter(l => l.trim() !== ''),
-                    weddingcoatsuit: portfolioData['port-weddingcoatsuit'].split('\n').filter(l => l.trim() !== ''),
-                    veshti: portfolioData['port-veshti'].split('\n').filter(l => l.trim() !== ''),
-                    pants: portfolioData['port-pants'].split('\n').filter(l => l.trim() !== ''),
-                    kids0to6: portfolioData['port-kids0'].split('\n').filter(l => l.trim() !== ''),
-                    kids6to12: portfolioData['port-kids6'].split('\n').filter(l => l.trim() !== ''),
-                    prince: portfolioData['port-prince'].split('\n').filter(l => l.trim() !== ''),
-                    princess: portfolioData['port-princess'].split('\n').filter(l => l.trim() !== '')
-                }
-            };
+signInAnonymously(auth).then(async () => {
+    // டேட்டாபேஸிலிருந்து பழைய டேட்டாவை எடுத்து வருதல்
+    const docRef = doc(db, 'artifacts', 'selvarani-app', 'public', 'data', 'site_config', 'images');
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        
+        // Hero Images
+        if(data.hero) {
+            document.getElementById('hero-1').value = data.hero[1] || '';
+            document.getElementById('hero-2').value = data.hero[2] || '';
+            document.getElementById('hero-3').value = data.hero[3] || '';
+            document.getElementById('hero-4').value = data.hero[4] || '';
+        }
+        
+        // Trending
+        if(data.trending) {
+            document.getElementById('trend-title').value = data.trending.title || '';
+            document.getElementById('trend-desc').value = data.trending.desc || '';
+            if(data.trending.images) {
+                document.getElementById('trend-images').value = data.trending.images.join('\n');
+            }
+        }
+        
+        // Categories
+        if(data.categories) {
+            document.getElementById('cat-silk').value = data.categories.silk || '';
+            document.getElementById('cat-banaras').value = data.categories.banaras || '';
+            document.getElementById('cat-pattu').value = data.categories.pattu || '';
+            document.getElementById('cat-cotton').value = data.categories.cotton || '';
+            document.getElementById('cat-shirts').value = data.categories.shirts || '';
+            document.getElementById('cat-mensinners').value = data.categories.mensinners || '';
+            document.getElementById('cat-tshirts').value = data.categories.tshirts || '';
+            document.getElementById('cat-weddingcoatsuit').value = data.categories.weddingcoatsuit || '';
+            document.getElementById('cat-veshti').value = data.categories.veshti || '';
+            document.getElementById('cat-pants').value = data.categories.pants || '';
+            document.getElementById('cat-kids0').value = data.categories.kids0to6 || '';
+            document.getElementById('cat-kids6').value = data.categories.kids6to12 || '';
+            document.getElementById('cat-prince').value = data.categories.prince || '';
+            document.getElementById('cat-princess').value = data.categories.princess || '';
+        }
+        
+        // Portfolios
+        if(data.portfolios) {
+            portfolioData['port-silk'] = (data.portfolios.silk || []).join('\n');
+            portfolioData['port-banaras'] = (data.portfolios.banaras || []).join('\n');
+            portfolioData['port-pattu'] = (data.portfolios.pattu || []).join('\n');
+            portfolioData['port-cotton'] = (data.portfolios.cotton || []).join('\n');
+            portfolioData['port-shirts'] = (data.portfolios.shirts || []).join('\n');
+            portfolioData['port-mensinners'] = (data.portfolios.mensinners || []).join('\n');
+            portfolioData['port-tshirts'] = (data.portfolios.tshirts || []).join('\n');
+            portfolioData['port-weddingcoatsuit'] = (data.portfolios.weddingcoatsuit || []).join('\n');
+            portfolioData['port-veshti'] = (data.portfolios.veshti || []).join('\n');
+            portfolioData['port-pants'] = (data.portfolios.pants || []).join('\n');
+            portfolioData['port-kids0'] = (data.portfolios.kids0to6 || []).join('\n');
+            portfolioData['port-kids6'] = (data.portfolios.kids6to12 || []).join('\n');
+            portfolioData['port-prince'] = (data.portfolios.prince || []).join('\n');
+            portfolioData['port-princess'] = (data.portfolios.princess || []).join('\n');
+            
+            // Update text area with current selection
+            document.getElementById('portfolio-images').value = portfolioData[currentPortfolio];
+        }
+    }
+}).catch((error) => console.error("Auth Error:", error));
 
             try {
                 // உங்கள் டேட்டாபேஸில் எந்த Folder-ல் சேமிக்க வேண்டும் என்பது
