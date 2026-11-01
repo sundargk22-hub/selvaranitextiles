@@ -1468,11 +1468,11 @@ const firebaseConfig = {
 
                             // 2. Live update Category Cover Images
                             if (data.categories) {
-                                const cats = [
-                                    'silk', 'banaras', 'pattu', 'cotton', 
-                                    'shirts', 'mens inners', 't-shirts', 'wedding coat suit', 'veshti', 'pants',
-                                    'kids0to6', 'kids6to12', 'prince', 'princess'
-                                ];
+                               const cats = [
+    'silk', 'banaras', 'pattu', 'cotton', 
+    'shirts', 'vest', 'briefs', 'lungies', 'veshti', 'pants',
+    'kids0to6', 'kids6to12', 'prince', 'princess'
+];
                                 cats.forEach(c => {
                                     if(data.categories[c]) {
                                         const imgEl = document.getElementById(`cat-img-${c}`);
