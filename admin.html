@@ -299,13 +299,9 @@
     </div>
 
 <script type="module">
-    // =====================================================================
-    // 🔒 ADMIN CREDENTIALS
     const ADMIN_USER = 'admin';
     const ADMIN_PASS = '1';
-    // =====================================================================
 
-    // DOM Elements
     const loginScreen = document.getElementById('login-screen');
     const dashboardScreen = document.getElementById('dashboard-screen');
     const loginForm = document.getElementById('login-form');
@@ -315,7 +311,7 @@
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toast-msg');
     
-    // Portfolio State Management (No Spaces in Keys)
+    // Removed spaces in keys
     const portfolioData = {
         'port-silk': '', 'port-banaras': '', 'port-pattu': '', 'port-cotton': '',
         'port-shirts': '', 'port-mensinners': '', 'port-tshirts': '', 'port-weddingcoatsuit': '', 'port-veshti': '', 'port-pants': '',
@@ -325,7 +321,6 @@
     const portfolioTextarea = document.getElementById('portfolio-images');
     let currentPortfolio = portfolioSelector.value;
 
-    // Custom Toast Function
     function showToast(message, isError = false) {
         toastMsg.innerText = message;
         if(isError) {
@@ -337,19 +332,14 @@
             toast.classList.replace('shadow-[0_10px_40px_rgba(239,68,68,0.4)]', 'shadow-[0_10px_40px_rgba(34,197,94,0.4)]');
             toast.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>${message}</span>`;
         }
-        
         toast.classList.remove('opacity-0', 'translate-y-8');
-        setTimeout(() => {
-            toast.classList.add('opacity-0', 'translate-y-8');
-        }, 3000);
+        setTimeout(() => { toast.classList.add('opacity-0', 'translate-y-8'); }, 3000);
     }
 
-    // Login Logic
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const u = document.getElementById('username').value.trim();
         const p = document.getElementById('password').value.trim();
-
         if (u === ADMIN_USER && p === ADMIN_PASS) {
             loginError.classList.add('hidden');
             loginScreen.classList.add('hidden');
@@ -362,7 +352,6 @@
         }
     });
 
-    // Logout Logic
     logoutBtn.addEventListener('click', () => {
         dashboardScreen.classList.add('hidden');
         dashboardScreen.classList.remove('flex');
@@ -370,95 +359,92 @@
         document.getElementById('password').value = '';
     });
 
-    // Portfolio Dropdown Logic
     portfolioSelector.addEventListener('change', (e) => {
         portfolioData[currentPortfolio] = portfolioTextarea.value;
         currentPortfolio = e.target.value;
-        portfolioTextarea.value = portfolioData[currentPortfolio] || "";
+        portfolioTextarea.value = portfolioData[currentPortfolio];
     });
 
-    // === Firebase Database Integration ===
+    // === Firebase Integration ===
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyApYbUmyLfJIH9HwHWG4_w_YCh96JNmB88",
-      authDomain: "selvaranitextiles2.firebaseapp.com",
-      projectId: "selvaranitextiles2",
-      storageBucket: "selvaranitextiles2.firebasestorage.app",
-      messagingSenderId: "578001466451",
-      appId: "1:578001466451:web:0235ae2a1c8c30b24bc2a6",
-      measurementId: "G-QS06DVVTZN"
+        apiKey: "AIzaSyApYbUmyLfJIH9HwHWG4_w_YCh96JNmB88",
+        authDomain: "selvaranitextiles2.firebaseapp.com",
+        projectId: "selvaranitextiles2",
+        storageBucket: "selvaranitextiles2.firebasestorage.app",
+        messagingSenderId: "578001466451",
+        appId: "1:578001466451:web:0235ae2a1c8c30b24bc2a6",
+        measurementId: "G-QS06DVVTZN"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    
-    const appIdString = 'selvarani-app';
-    const docRef = doc(db, 'artifacts', appIdString, 'public', 'data', 'site_config', 'images');
+    const appId = 'selvarani-app';
+    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'site_config', 'images');
 
-    // Load Existing Data Function
-    async function loadExistingData() {
-        try {
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                
-                if(data.hero) {
-                    if(data.hero[1] && document.getElementById('hero-1')) document.getElementById('hero-1').value = data.hero[1];
-                    if(data.hero[2] && document.getElementById('hero-2')) document.getElementById('hero-2').value = data.hero[2];
-                    if(data.hero[3] && document.getElementById('hero-3')) document.getElementById('hero-3').value = data.hero[3];
-                    if(data.hero[4] && document.getElementById('hero-4')) document.getElementById('hero-4').value = data.hero[4];
-                }
-                
-                if(data.trending) {
-                    if(data.trending.title && document.getElementById('trend-title')) document.getElementById('trend-title').value = data.trending.title;
-                    if(data.trending.desc && document.getElementById('trend-desc')) document.getElementById('trend-desc').value = data.trending.desc;
-                    if(data.trending.images && document.getElementById('trend-images')) document.getElementById('trend-images').value = data.trending.images.join('\n');
-                }
-                
-                if(data.categories) {
-                    const catMap = {
-                        'silk': 'cat-silk', 'banaras': 'cat-banaras', 'pattu': 'cat-pattu', 'cotton': 'cat-cotton',
-                        'shirts': 'cat-shirts', 'mensinners': 'cat-mensinners', 'tshirts': 'cat-tshirts', 
-                        'weddingcoatsuit': 'cat-weddingcoatsuit', 'veshti': 'cat-veshti', 'pants': 'cat-pants',
-                        'kids0to6': 'cat-kids0', 'kids6to12': 'cat-kids6', 'prince': 'cat-prince', 'princess': 'cat-princess'
-                    };
-                    for (const [key, id] of Object.entries(catMap)) {
-                        if (data.categories[key] && document.getElementById(id)) {
-                            document.getElementById(id).value = data.categories[key];
+    signInAnonymously(auth).catch((error) => console.error("Auth Error:", error));
+
+    // Load Data correctly after Auth
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    if(data.hero) {
+                        if(data.hero[1] && document.getElementById('hero-1')) document.getElementById('hero-1').value = data.hero[1];
+                        if(data.hero[2] && document.getElementById('hero-2')) document.getElementById('hero-2').value = data.hero[2];
+                        if(data.hero[3] && document.getElementById('hero-3')) document.getElementById('hero-3').value = data.hero[3];
+                        if(data.hero[4] && document.getElementById('hero-4')) document.getElementById('hero-4').value = data.hero[4];
+                    }
+                    
+                    if(data.trending) {
+                        if(data.trending.title && document.getElementById('trend-title')) document.getElementById('trend-title').value = data.trending.title;
+                        if(data.trending.desc && document.getElementById('trend-desc')) document.getElementById('trend-desc').value = data.trending.desc;
+                        if(data.trending.images && document.getElementById('trend-images')) document.getElementById('trend-images').value = data.trending.images.join('\n');
+                    }
+                    
+                    if(data.categories) {
+                        const catMap = {
+                            'silk': 'cat-silk', 'banaras': 'cat-banaras', 'pattu': 'cat-pattu', 'cotton': 'cat-cotton',
+                            'shirts': 'cat-shirts', 'mensinners': 'cat-mensinners', 'tshirts': 'cat-tshirts', 
+                            'weddingcoatsuit': 'cat-weddingcoatsuit', 'veshti': 'cat-veshti', 'pants': 'cat-pants',
+                            'kids0to6': 'cat-kids0', 'kids6to12': 'cat-kids6', 'prince': 'cat-prince', 'princess': 'cat-princess'
+                        };
+                        for (const [key, id] of Object.entries(catMap)) {
+                            if (data.categories[key] && document.getElementById(id)) {
+                                document.getElementById(id).value = data.categories[key];
+                            }
                         }
                     }
-                }
-                
-                if(data.portfolios) {
-                    const portMap = {
-                        'silk': 'port-silk', 'banaras': 'port-banaras', 'pattu': 'port-pattu', 'cotton': 'port-cotton',
-                        'shirts': 'port-shirts', 'mensinners': 'port-mensinners', 'tshirts': 'port-tshirts', 
-                        'weddingcoatsuit': 'port-weddingcoatsuit', 'veshti': 'port-veshti', 'pants': 'port-pants',
-                        'kids0to6': 'port-kids0', 'kids6to12': 'port-kids6', 'prince': 'port-prince', 'princess': 'port-princess'
-                    };
-                    for (const [dbKey, portKey] of Object.entries(portMap)) {
-                        if (data.portfolios[dbKey]) {
-                            portfolioData[portKey] = data.portfolios[dbKey].join('\n');
+                    
+                    if(data.portfolios) {
+                        const portMap = {
+                            'silk': 'port-silk', 'banaras': 'port-banaras', 'pattu': 'port-pattu', 'cotton': 'port-cotton',
+                            'shirts': 'port-shirts', 'mensinners': 'port-mensinners', 'tshirts': 'port-tshirts', 
+                            'weddingcoatsuit': 'port-weddingcoatsuit', 'veshti': 'port-veshti', 'pants': 'port-pants',
+                            'kids0to6': 'port-kids0', 'kids6to12': 'port-kids6', 'prince': 'port-prince', 'princess': 'port-princess'
+                        };
+                        for (const [dbKey, portKey] of Object.entries(portMap)) {
+                            if (data.portfolios[dbKey]) {
+                                portfolioData[portKey] = data.portfolios[dbKey].join('\n');
+                            }
                         }
+                        if(portfolioTextarea) portfolioTextarea.value = portfolioData[currentPortfolio] || "";
                     }
-                    if(portfolioTextarea) portfolioTextarea.value = portfolioData[currentPortfolio] || "";
                 }
+            } catch (error) {
+                console.error("Error loading data:", error);
             }
-        } catch (error) {
-            console.error("Error loading data:", error);
         }
-    }
+    });
 
-    // Authenticate then Load Data
-    signInAnonymously(auth).then(() => {
-        loadExistingData();
-    }).catch((error) => console.error("Auth Error:", error));
-
-    // Save Logic
+    // Save Data Logic
     saveDataBtn.addEventListener('click', async () => {
         const originalText = saveDataBtn.innerHTML;
         saveDataBtn.innerHTML = `<svg class="animate-spin h-4 w-4 text-black inline mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...`;
@@ -495,25 +481,26 @@
                 princess: document.getElementById('cat-princess')?.value || "",
             },
             portfolios: {
-                silk: (portfolioData['port-silk'] || "").split('\n').filter(l => l.trim() !== ''),
-                banaras: (portfolioData['port-banaras'] || "").split('\n').filter(l => l.trim() !== ''),
-                pattu: (portfolioData['port-pattu'] || "").split('\n').filter(l => l.trim() !== ''),
-                cotton: (portfolioData['port-cotton'] || "").split('\n').filter(l => l.trim() !== ''),
-                shirts: (portfolioData['port-shirts'] || "").split('\n').filter(l => l.trim() !== ''),
-                mensinners: (portfolioData['port-mensinners'] || "").split('\n').filter(l => l.trim() !== ''),
-                tshirts: (portfolioData['port-tshirts'] || "").split('\n').filter(l => l.trim() !== ''),
-                weddingcoatsuit: (portfolioData['port-weddingcoatsuit'] || "").split('\n').filter(l => l.trim() !== ''),
-                veshti: (portfolioData['port-veshti'] || "").split('\n').filter(l => l.trim() !== ''),
-                pants: (portfolioData['port-pants'] || "").split('\n').filter(l => l.trim() !== ''),
-                kids0to6: (portfolioData['port-kids0'] || "").split('\n').filter(l => l.trim() !== ''),
-                kids6to12: (portfolioData['port-kids6'] || "").split('\n').filter(l => l.trim() !== ''),
-                prince: (portfolioData['port-prince'] || "").split('\n').filter(l => l.trim() !== ''),
-                princess: (portfolioData['port-princess'] || "").split('\n').filter(l => l.trim() !== '')
+                silk: portfolioData['port-silk'].split('\n').filter(l => l.trim() !== ''),
+                banaras: portfolioData['port-banaras'].split('\n').filter(l => l.trim() !== ''),
+                pattu: portfolioData['port-pattu'].split('\n').filter(l => l.trim() !== ''),
+                cotton: portfolioData['port-cotton'].split('\n').filter(l => l.trim() !== ''),
+                shirts: portfolioData['port-shirts'].split('\n').filter(l => l.trim() !== ''),
+                mensinners: portfolioData['port-mensinners'].split('\n').filter(l => l.trim() !== ''),
+                tshirts: portfolioData['port-tshirts'].split('\n').filter(l => l.trim() !== ''),
+                weddingcoatsuit: portfolioData['port-weddingcoatsuit'].split('\n').filter(l => l.trim() !== ''),
+                veshti: portfolioData['port-veshti'].split('\n').filter(l => l.trim() !== ''),
+                pants: portfolioData['port-pants'].split('\n').filter(l => l.trim() !== ''),
+                kids0to6: portfolioData['port-kids0'].split('\n').filter(l => l.trim() !== ''),
+                kids6to12: portfolioData['port-kids6'].split('\n').filter(l => l.trim() !== ''),
+                prince: portfolioData['port-prince'].split('\n').filter(l => l.trim() !== ''),
+                princess: portfolioData['port-princess'].split('\n').filter(l => l.trim() !== '')
             }
         };
 
         try {
             await setDoc(docRef, websiteData, { merge: true });
+            console.log("🚀 Data Successfully Saved to Firebase");
             saveDataBtn.innerHTML = originalText;
             saveDataBtn.disabled = false;
             showToast("Website Updated Successfully! Changes are now live.");
