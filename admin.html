@@ -223,9 +223,9 @@
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                         <div><label class="block text-[10px] text-gray-400 mb-1 uppercase">Shirts</label><input type="text" id="cat-shirts" class="input-field w-full px-3 py-2 rounded-lg text-sm"></div>
-                        <div><label class="block text-[10px] text-gray-400 mb-1 uppercase">mens inners</label><input type="text" id="cat-mens inners" class="input-field w-full px-3 py-2 rounded-lg text-sm"></div>
-                        <div><label class="block text-[10px] text-gray-400 mb-1 uppercase">t-shirts</label><input type="text" id="cat-t-shirts" class="input-field w-full px-3 py-2 rounded-lg text-sm"></div>
-                        <div><label class="block text-[10px] text-gray-400 mb-1 uppercase">wedding coat suit</label><input type="text" id="cat-wedding coat suit" class="input-field w-full px-3 py-2 rounded-lg text-sm"></div>
+                        <div><label class="block text-[10px] text-gray-400 mb-1 uppercase">mens inners</label><input type="text" id="cat-mensinners" class="input-field w-full px-3 py-2 rounded-lg text-sm"></div>
+                        <div><label class="block text-[10px] text-gray-400 mb-1 uppercase">t-shirts</label><input type="text" id="cat-tshirts" class="input-field w-full px-3 py-2 rounded-lg text-sm"></div>
+                        <div><label class="block text-[10px] text-gray-400 mb-1 uppercase">wedding coat suit</label><input type="text" id="cat-weddingcoatsuit" class="input-field w-full px-3 py-2 rounded-lg text-sm"></div>
                         <div><label class="block text-[10px] text-gray-400 mb-1 uppercase">Veshti</label><input type="text" id="cat-veshti" class="input-field w-full px-3 py-2 rounded-lg text-sm"></div>
                         <div><label class="block text-[10px] text-gray-400 mb-1 uppercase">Pants</label><input type="text" id="cat-pants" class="input-field w-full px-3 py-2 rounded-lg text-sm"></div>
                     </div>
@@ -263,9 +263,9 @@
                                 </optgroup>
                                 <optgroup label="Men's Clothing">
                                     <option value="port-shirts">Shirts</option>
-                                    <option value="port-mens inners">mens inners</option>
-                                    <option value="port-t-shirts">t-shirts</option>
-                                    <option value="port-wedding coat suit">wedding coat suit</option>
+                                    <option value="port-mensinners">mens inners</option>
+                                    <option value="port-tshirts">t-shirts</option>
+                                    <option value="port-weddingcoatsuit">wedding coat suit</option>
                                     <option value="port-veshti">Veshti</option>
                                     <option value="port-pants">Pants</option>
                                 </optgroup>
@@ -322,7 +322,7 @@
         // Portfolio State Management (To hold data when switching dropdowns)
         const portfolioData = {
             'port-silk': '', 'port-banaras': '', 'port-pattu': '', 'port-cotton': '',
-            'port-shirts': '', 'port-mens inners': '', 'port-t-shirts': '', 'port-lungies': '', 'port-wedding coat suit': '', 'port-pants': '',
+            'port-shirts': '', 'port-mensinners': '', 'port-tshirts': '', 'port-weddingcoatsuit': '', 'port-veshti': '', 'port-pants': '',
             'port-kids0': '', 'port-kids6': '', 'port-prince': '', 'port-princess': ''
         };
         const portfolioSelector = document.getElementById('portfolio-selector');
@@ -442,9 +442,9 @@ const firebaseConfig = {
                     pattu: document.getElementById('cat-pattu').value,
                     cotton: document.getElementById('cat-cotton').value,
                     shirts: document.getElementById('cat-shirts').value,
-                    mensinners: document.getElementById('cat-mens inners').value,
-                    tshirts: document.getElementById('cat-t-shirts').value,
-                    weddingcoatsuit: document.getElementById('cat-wedding coat suit').value,
+                    mensinners: document.getElementById('cat-mensinners').value,
+                    tshirts: document.getElementById('cat-tshirts').value,
+                    weddingcoatsuit: document.getElementById('cat-weddingcoatsuit').value,
                     veshti: document.getElementById('cat-veshti').value,
                     pants: document.getElementById('cat-pants').value,
                     kids0to6: document.getElementById('cat-kids0').value,
@@ -458,9 +458,9 @@ const firebaseConfig = {
                     pattu: portfolioData['port-pattu'].split('\n').filter(l => l.trim() !== ''),
                     cotton: portfolioData['port-cotton'].split('\n').filter(l => l.trim() !== ''),
                     shirts: portfolioData['port-shirts'].split('\n').filter(l => l.trim() !== ''),
-                    mensinners: portfolioData['port-mens inners'].split('\n').filter(l => l.trim() !== ''),
-                    tshirts: portfolioData['port-t-shirts'].split('\n').filter(l => l.trim() !== ''),
-                    weddingcoatsuit: portfolioData['port-wedding coat suit'].split('\n').filter(l => l.trim() !== ''),
+                    mensinners: portfolioData['port-mensinners'].split('\n').filter(l => l.trim() !== ''),
+                    tshirts: portfolioData['port-tshirts'].split('\n').filter(l => l.trim() !== ''),
+                    weddingcoatsuit: portfolioData['port-weddingcoatsuit'].split('\n').filter(l => l.trim() !== ''),
                     veshti: portfolioData['port-veshti'].split('\n').filter(l => l.trim() !== ''),
                     pants: portfolioData['port-pants'].split('\n').filter(l => l.trim() !== ''),
                     kids0to6: portfolioData['port-kids0'].split('\n').filter(l => l.trim() !== ''),
